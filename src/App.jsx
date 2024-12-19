@@ -1,11 +1,11 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 import { AuthProvider } from "./contexts/AuthContext";
-import { ThemeProvider } from "./contexts/ThemeContext";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
-import Signup from "./pages/Signup";
 import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import TodoPage from "./pages/TodoPage";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -13,17 +13,27 @@ export default function App() {
   return (
     <AuthProvider>
       <ThemeProvider>
-        <BrowserRouter>
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/todos" element={<TodoPage />} />
-            <Route path="*" element={<h1>404 - Page Not Found</h1>} />
-          </Routes>
-        </BrowserRouter>
+        <AppContent />
       </ThemeProvider>
     </AuthProvider>
+  );
+}
+
+function AppContent() {
+  const { darkMode } = useTheme();
+  return (
+    <div
+      className={`min-vh-100 ${darkMode ? "bg-dark text-white" : "bg-light text-dark"}`}
+    >
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/todos" element={<TodoPage />} />
+        </Routes>
+      </BrowserRouter>
+    </div>
   );
 }

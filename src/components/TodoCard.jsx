@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Card } from "react-bootstrap";
 
 export default function TodoCard({ todo, onEdit, onDelete }) {
-  const [timer, setTimer] = useState(todo.timer);
+  const [timer, setTimer] = useState(todo.timer || { hours: 0, minutes: 0, seconds: 0 });
   const [isRunning, setIsRunning] = useState(false);
-  let interval;
+  let intervalRef = null;
 
   const handleTimerChange = (e) => {
     const { name, value } = e.target;
@@ -17,11 +17,13 @@ export default function TodoCard({ todo, onEdit, onDelete }) {
   const startTimer = () => {
     if (isRunning) return;
     setIsRunning(true);
-    interval = setInterval(() => {
+    intervalRef = setInterval(() => {
       setTimer((prev) => {
         const totalSeconds = prev.hours * 3600 + prev.minutes * 60 + prev.seconds - 1;
         if (totalSeconds <= 0) {
-          clearInterval(interval);
+          clearInterval(intervalRef);
+          setIsRunning(false);
+          alert("Timer has ended!");
           return { hours: 0, minutes: 0, seconds: 0 };
         }
         return {
@@ -34,23 +36,27 @@ export default function TodoCard({ todo, onEdit, onDelete }) {
   };
 
   const pauseTimer = () => {
-    clearInterval(interval);
+    clearInterval(intervalRef);
     setIsRunning(false);
   };
 
   const resetTimer = () => {
-    clearInterval(interval);
+    clearInterval(intervalRef);
     setIsRunning(false);
-    setTimer(todo.timer);
+    setTimer(todo.timer || { hours: 0, minutes: 0, seconds: 0 });
   };
 
+  useEffect(() => {
+    return () => clearInterval(intervalRef); // Cleanup interval on unmount
+  }, []);
+
   return (
-    <Card className="mb-3">
+    <Card className="mb-3" style={{ maxWidth: "500px" }}>
       <Card.Body>
-        <Card.Title>{todo.task}</Card.Title>
+        <Card.Title>{todo.title}</Card.Title>
         <Card.Text>{todo.description}</Card.Text>
         <div className="mb-3">
-          <label>Timer:</label>
+          <label>Timer: Hour : Minute : Second</label>
           <div className="d-flex">
             <input
               type="number"
@@ -59,6 +65,7 @@ export default function TodoCard({ todo, onEdit, onDelete }) {
               onChange={handleTimerChange}
               className="form-control me-1"
               placeholder="HH"
+              style={{ maxWidth: "80px" }}
             />
             <input
               type="number"
@@ -67,6 +74,7 @@ export default function TodoCard({ todo, onEdit, onDelete }) {
               onChange={handleTimerChange}
               className="form-control me-1"
               placeholder="MM"
+              style={{ maxWidth: "80px" }}
             />
             <input
               type="number"
@@ -75,6 +83,7 @@ export default function TodoCard({ todo, onEdit, onDelete }) {
               onChange={handleTimerChange}
               className="form-control"
               placeholder="SS"
+              style={{ maxWidth: "80px" }}
             />
           </div>
         </div>

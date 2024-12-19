@@ -1,26 +1,20 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext } from "react";
 import useLocalStorage from "use-local-storage";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useLocalStorage("user", null); // Persist user
+  const [user, setUser] = useLocalStorage("user", null);
 
   const signup = (email, password) => {
-    // Mock signup implementation
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-    if (users.find((u) => u.email === email)) {
-      throw new Error("User already exists");
-    }
-    const newUser = { email, password };
-    localStorage.setItem("users", JSON.stringify([...users, newUser]));
+    // Save the user's email and password in localStorage for simplicity
+    localStorage.setItem("auth", JSON.stringify({ email, password }));
     setUser({ email });
   };
 
   const login = (email, password) => {
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-    const user = users.find((u) => u.email === email && u.password === password);
-    if (user) {
+    const storedUser = JSON.parse(localStorage.getItem("auth"));
+    if (storedUser && storedUser.email === email && storedUser.password === password) {
       setUser({ email });
     } else {
       throw new Error("Invalid email or password");
@@ -29,6 +23,8 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem("todos"); // Clear todos on logout
+    localStorage.removeItem("auth"); // Optionally clear auth info on logout
   };
 
   return (

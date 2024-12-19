@@ -8,7 +8,11 @@ export default function Navbar() {
   const { darkMode, toggleDarkMode } = useTheme();
 
   return (
-    <nav className={`navbar navbar-expand-lg ${darkMode ? "bg-dark" : "bg-light"} py-3`}>
+    <nav
+      className={`navbar navbar-expand-lg ${
+        darkMode ? "navbar-dark bg-dark" : "navbar-light bg-light"
+      }`}
+    >
       <div className="container-fluid">
         <Link
           to="/"
@@ -18,15 +22,26 @@ export default function Navbar() {
           Todo App
         </Link>
         <div>
-          <button onClick={toggleDarkMode} className="btn btn-outline-secondary me-2">
+          <button
+            onClick={toggleDarkMode}
+            className={`btn btn-outline-secondary me-2 ${
+              darkMode ? "text-light" : "text-dark"
+            }`}
+          >
             {darkMode ? "Light Mode" : "Dark Mode"}
           </button>
           {user ? (
-            <button onClick={logout} className="btn btn-danger">Logout</button>
+            <button onClick={logout} className="btn btn-danger">
+              Logout
+            </button>
           ) : (
             <>
-              <Link to="/login" className="btn btn-primary me-2">Login</Link>
-              <Link to="/signup" className="btn btn-secondary">Signup</Link>
+              <Link to="/login" className="btn btn-primary me-2">
+                Login
+              </Link>
+              <Link to="/signup" className="btn btn-secondary">
+                Signup
+              </Link>
             </>
           )}
         </div>
