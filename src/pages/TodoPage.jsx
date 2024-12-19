@@ -9,17 +9,11 @@ export default function TodoPage() {
   const [todos, setTodos] = useState(
     JSON.parse(localStorage.getItem("todos")) || []
   );
-  const [newTodo, setNewTodo] = useState({ title: "", description: "" });
-  const [editIndex, setEditIndex] = useState(null);
 
   useEffect(() => {
     if (!user) {
       navigate("/login"); // Redirect if user logs out
     }
-
-    return () => {
-      setTodos([]); // Cleanup todos on component unmount
-    };
   }, [user, navigate]);
 
   const saveTodos = (updatedTodos) => {
@@ -27,38 +21,17 @@ export default function TodoPage() {
     localStorage.setItem("todos", JSON.stringify(updatedTodos));
   };
 
-  const addOrEditTodo = () => {
-    if (!newTodo.title.trim() || !newTodo.description.trim()) return;
-
-    if (editIndex !== null) {
-      // Edit existing Todo
-      const updatedTodos = [...todos];
-      updatedTodos[editIndex] = newTodo;
-      saveTodos(updatedTodos);
-      setEditIndex(null);
-    } else {
-      // Add new Todo
-      saveTodos([
-        ...todos,
-        {
-          ...newTodo,
-          timer: { hours: 0, minutes: 0, seconds: 0 },
-          reminder: new Date().toISOString(),
-        },
-      ]);
-    }
-
-    setNewTodo({ title: "", description: "" });
-  };
+  const addTodo = (newTodo) => saveTodos([...todos, newTodo]);
 
   const deleteTodo = (index) => {
     const updatedTodos = todos.filter((_, i) => i !== index);
     saveTodos(updatedTodos);
   };
 
-  const editTodo = (index) => {
-    setNewTodo(todos[index]);
-    setEditIndex(index);
+  const updateTodo = (index, updatedTodo) => {
+    const updatedTodos = [...todos];
+    updatedTodos[index] = updatedTodo;
+    saveTodos(updatedTodos);
   };
 
   const quickSetupDeveloper = () => {
@@ -67,19 +40,16 @@ export default function TodoPage() {
         title: "Complete React Component",
         description: "Build and test a reusable TodoCard component.",
         timer: { hours: 1, minutes: 30, seconds: 0 },
-        reminder: new Date().toISOString(),
       },
       {
         title: "Optimize State Management",
         description: "Implement context for better state handling.",
         timer: { hours: 2, minutes: 0, seconds: 0 },
-        reminder: new Date().toISOString(),
       },
       {
         title: "Fix Authentication Bugs",
         description: "Debug login and signup workflows.",
         timer: { hours: 0, minutes: 45, seconds: 0 },
-        reminder: new Date().toISOString(),
       },
     ];
     saveTodos([...todos, ...developerTemplates]);
@@ -88,39 +58,29 @@ export default function TodoPage() {
   return (
     <div className="container mt-5">
       <h1>Todo List</h1>
-      <div className="mb-4">
-        <div className="mb-3">
-          <input
-            type="text"
-            placeholder="Title"
-            value={newTodo.title}
-            onChange={(e) =>
-              setNewTodo({ ...newTodo, title: e.target.value })
-            }
-            className="form-control mb-2"
-          />
-          <textarea
-            placeholder="Description"
-            value={newTodo.description}
-            onChange={(e) =>
-              setNewTodo({ ...newTodo, description: e.target.value })
-            }
-            className="form-control"
-          />
-        </div>
-        <button className="btn btn-success me-2" onClick={addOrEditTodo}>
-          {editIndex !== null ? "Update Todo" : "Add Todo"}
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <button
+          className="btn btn-success"
+          onClick={() =>
+            addTodo({
+              title: "New Todo",
+              description: "Describe your task here",
+              timer: { hours: 0, minutes: 0, seconds: 0 },
+            })
+          }
+        >
+          Add Todo
         </button>
         <button className="btn btn-primary" onClick={quickSetupDeveloper}>
-          Quick Setup: Software Developer
+          Software Developer Random Task
         </button>
       </div>
       {todos.map((todo, index) => (
         <TodoCard
           key={index}
           todo={todo}
-          onEdit={() => editTodo(index)}
           onDelete={() => deleteTodo(index)}
+          onUpdate={(updatedTodo) => updateTodo(index, updatedTodo)}
         />
       ))}
     </div>

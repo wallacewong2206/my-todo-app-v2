@@ -1,3 +1,4 @@
+// Navbar.jsx
 import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
@@ -14,22 +15,16 @@ export default function Navbar() {
       }`}
     >
       <div className="container-fluid">
-        <Link
-          to="/"
-          className="navbar-brand"
-          style={{ color: darkMode ? "white" : "black" }}
-        >
+        <Link to="/" className="navbar-brand">
           Todo App
         </Link>
         <div>
-          <button
-            onClick={toggleDarkMode}
-            className={`btn btn-outline-secondary me-2 ${
-              darkMode ? "text-light" : "text-dark"
-            }`}
-          >
+          <button onClick={toggleDarkMode} className="btn btn-secondary me-2">
             {darkMode ? "Light Mode" : "Dark Mode"}
           </button>
+          <Link to="/todos" className="btn btn-outline-primary me-2">
+            Todo List
+          </Link>
           {user ? (
             <button onClick={logout} className="btn btn-danger">
               Logout

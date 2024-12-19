@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Button, Card } from "react-bootstrap";
 
-export default function TodoCard({ todo, onEdit, onDelete }) {
+export default function TodoCard({ todo, onUpdate, onDelete }) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedTodo, setEditedTodo] = useState({ ...todo });
   const [timer, setTimer] = useState(todo.timer || { hours: 0, minutes: 0, seconds: 0 });
   const [isRunning, setIsRunning] = useState(false);
   let intervalRef = null;
@@ -46,6 +48,11 @@ export default function TodoCard({ todo, onEdit, onDelete }) {
     setTimer(todo.timer || { hours: 0, minutes: 0, seconds: 0 });
   };
 
+  const handleSave = () => {
+    onUpdate(editedTodo); // Save changes
+    setIsEditing(false); // Exit edit mode
+  };
+
   useEffect(() => {
     return () => clearInterval(intervalRef); // Cleanup interval on unmount
   }, []);
@@ -53,9 +60,41 @@ export default function TodoCard({ todo, onEdit, onDelete }) {
   return (
     <Card className="mb-3" style={{ maxWidth: "500px" }}>
       <Card.Body>
-        <Card.Title>{todo.title}</Card.Title>
-        <Card.Text>{todo.description}</Card.Text>
-        <div className="mb-3">
+        {isEditing ? (
+          <>
+            <input
+              type="text"
+              value={editedTodo.title}
+              onChange={(e) => setEditedTodo({ ...editedTodo, title: e.target.value })}
+              className="form-control mb-2"
+              placeholder="Edit title"
+            />
+            <textarea
+              value={editedTodo.description}
+              onChange={(e) => setEditedTodo({ ...editedTodo, description: e.target.value })}
+              className="form-control mb-2"
+              placeholder="Edit description"
+            />
+            <Button onClick={handleSave} variant="success" className="me-2">
+              Save
+            </Button>
+            <Button onClick={() => setIsEditing(false)} variant="secondary">
+              Cancel
+            </Button>
+          </>
+        ) : (
+          <>
+            <Card.Title>{todo.title}</Card.Title>
+            <Card.Text>{todo.description}</Card.Text>
+            <Button onClick={() => setIsEditing(true)} variant="warning" className="me-2">
+              Edit
+            </Button>
+            <Button onClick={onDelete} variant="danger">
+              Delete
+            </Button>
+          </>
+        )}
+        <div className="mt-3">
           <label>Timer: Hour : Minute : Second</label>
           <div className="d-flex">
             <input
@@ -86,22 +125,16 @@ export default function TodoCard({ todo, onEdit, onDelete }) {
               style={{ maxWidth: "80px" }}
             />
           </div>
+          <Button onClick={startTimer} className="me-2 mt-2" disabled={isRunning}>
+            Start
+          </Button>
+          <Button onClick={pauseTimer} className="me-2 mt-2" disabled={!isRunning}>
+            Pause
+          </Button>
+          <Button onClick={resetTimer} className="me-2 mt-2">
+            Reset
+          </Button>
         </div>
-        <Button onClick={startTimer} className="me-2" disabled={isRunning}>
-          Start
-        </Button>
-        <Button onClick={pauseTimer} className="me-2" disabled={!isRunning}>
-          Pause
-        </Button>
-        <Button onClick={resetTimer} className="me-2">
-          Reset
-        </Button>
-        <Button onClick={onEdit} variant="warning" className="me-2">
-          Edit
-        </Button>
-        <Button onClick={onDelete} variant="danger">
-          Delete
-        </Button>
       </Card.Body>
     </Card>
   );
