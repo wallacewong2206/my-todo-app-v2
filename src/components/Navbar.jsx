@@ -1,8 +1,8 @@
 // Navbar.jsx
-import React from "react";
-import { Link } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
-import { useTheme } from "../contexts/ThemeContext";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -11,7 +11,7 @@ export default function Navbar() {
   return (
     <nav
       className={`navbar navbar-expand-lg ${
-        darkMode ? "navbar-dark bg-dark" : "navbar-light bg-light"
+        darkMode ? 'navbar-dark bg-dark' : 'navbar-light bg-light'
       }`}
     >
       <div className="container-fluid">
@@ -20,7 +20,7 @@ export default function Navbar() {
         </Link>
         <div>
           <button onClick={toggleDarkMode} className="btn btn-secondary me-2">
-            {darkMode ? "Light Mode" : "Dark Mode"}
+            {darkMode ? 'Light Mode' : 'Dark Mode'}
           </button>
           <Link to="/todos" className="btn btn-outline-primary me-2">
             Todo List

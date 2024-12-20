@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { useAuth } from "../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -14,7 +14,7 @@ export default function Login() {
     e.preventDefault();
     try {
       await login(email, password);
-      navigate("/todos");
+      navigate('/todos');
     } catch (err) {
       setError(err.message);
     }
@@ -22,12 +22,14 @@ export default function Login() {
 
   return (
     <div className="container d-flex align-items-center justify-content-center vh-100">
-      <div className="w-100" style={{ maxWidth: "400px" }}>
+      <div className="w-100" style={{ maxWidth: '400px' }}>
         <h2 className="text-center mb-4">Login</h2>
         {error && <div className="alert alert-danger">{error}</div>}
         <form onSubmit={handleLogin}>
           <div className="mb-3">
-            <label htmlFor="email" className="form-label">Email</label>
+            <label htmlFor="email" className="form-label">
+              Email
+            </label>
             <input
               type="email"
               id="email"
@@ -38,10 +40,12 @@ export default function Login() {
             />
           </div>
           <div className="mb-3">
-            <label htmlFor="password" className="form-label">Password</label>
+            <label htmlFor="password" className="form-label">
+              Password
+            </label>
             <div className="input-group">
               <input
-                type={showPassword ? "text" : "password"}
+                type={showPassword ? 'text' : 'password'}
                 id="password"
                 className="form-control"
                 value={password}
@@ -53,12 +57,14 @@ export default function Login() {
                 className="btn btn-outline-secondary"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? "Hide" : "Show"}
+                {showPassword ? 'Hide' : 'Show'}
               </button>
             </div>
           </div>
           <div className="d-flex justify-content-center">
-            <button type="submit" className="btn btn-primary">Login</button>
+            <button type="submit" className="btn btn-primary">
+              Login
+            </button>
           </div>
         </form>
       </div>
